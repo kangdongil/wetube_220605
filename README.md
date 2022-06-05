@@ -23,10 +23,14 @@
 
   - Git 설정하기
     - `git init`
+	- `touch .gitignore`
 	- `GitHub`에서 새로운 `Repository` 만들기
 	- `git remote add origin https://github.com/[계정이름]/[프로젝트이름]`
 	- `git push origin master`
 	- 프로젝트 `commit`하기
+
+  - `.gitignore`
+    - `.goorm.manifest`(GoormIDE)
 
 # NodeJS 실행하기
   1. `Node` 명령어 이용하기
@@ -38,14 +42,16 @@
 	   - `npm start` / `npm build`
   3. `Babel` + `Nodemon`
      - `Babel`: 최신 Javascript문을 호환성 있는(안정성 있는) 코드로 변환함
+	   - [Link](https://babeljs.io/setup#installation)
 	   - `npm i -D @babel/core @babel/preset-env @babel/node`
-	   - `touch babel/config.json`
+	   - `touch babel.config.json`
 	   - `{"presets": ["@babel/preset-env"]}`
 	   - `script`: `babel-node [JS파일명].js`
 	 - `Nodemon`: 파일저장할 때마다 서버 새로고침함
 	   - `npm i -D nodemon`
-	   - `script`: `nodemon --exec`
-	   - `{"exec": "babel-node src/init/js"}`
+	   - `script`: `nodemon --exec` + `[BABEL-NODE]`
+	   - `touch nodemon.json`
+	   - `{"exec": "babel-node src/init.js"}`
 
 # NodeJS 프로젝트 구조 살펴보기
   - `package.json`
@@ -65,5 +71,36 @@
       - 패키지간 위계는 package.json에서 기술하며, 파일 경로상 위계는 동등하다
     - `package-lock.json`
       - 패키지 버전관리하는 파일
+  - `src/`
 
-# 
+# NodeJS Package를 Import & Export하기
+  - NodeJS 파일은 환경독립적이다
+    - 각 파일마다 import와 export를 개별적으로 해야한다
+  - Import하기
+    - 구JS 코드: `const [변수명] = require("[패키지명]");`
+    - `import [변수명] = "[패키지명]";`
+  - Export하기
+    - 무언가 import하기 전에 export를 해야 한다
+  - `Export Default`
+    - js파일의 대표 variable을 export할 때,
+    - js파일 마지막문에 export default [variable명];라 쓴다
+    - 이를 import하려면 `import [임의명] from "[파일 경로]";`
+  - `Export`
+    - js파일의 여러 variable을 export할 때 적합함
+    - variable마다 맨앞에 export를 붙인다
+    - 이를 import하려면 `import { ... } from "[파일 경로]"`
+	
+# Express로 Server 구동하기
+  1. Express 설치하기
+     - `npm i express`
+	 - `import express from "express";`
+  2. Express Application을 Variable에 저장하기
+     - `const app = express();`
+  3. Express가 request에 listen하게 하기(서버 시작)
+     - `app.listen(PORT, CALLBACK)`
+	   - `PORT`: 컴퓨터와 서버간 접속을 관리하는 일종의 문.
+	   - `CALLBACK`함수: PORT에 listen 이벤트 발생시 실행되는 함수.
+
+  * GoormIDE에서 PORT 설정하기
+    - 로컬PC: `http://localhost:${PORT}/`
+	- GoormIDE: `[프로젝트]` - `[실행URL과_포트]`
