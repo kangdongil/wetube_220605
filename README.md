@@ -31,6 +31,7 @@
 
   - `.gitignore`
     - `.goorm.manifest`(GoormIDE)
+	- `node_modules/`
 
 # NodeJS 실행하기
   1. `Node` 명령어 이용하기
@@ -104,3 +105,58 @@
   * GoormIDE에서 PORT 설정하기
     - 로컬PC: `http://localhost:${PORT}/`
 	- GoormIDE: `[프로젝트]` - `[실행URL과_포트]`
+
+## HTTP 방식으로 Server에게 웹페이지 Request하기
+  - `HTTP 방식`: 서버와 브라우저간 데이터를 주고받는 방식
+  - `GET Request`: 웹페이지 관련된 데이터를 요청하는 것
+    - `app.get("URL", CONT)`
+	- CONTROLLER 함수: 특정 URL으로 접속할 때 실행되는 함수.
+	  - `req(request)`, `res(response)` object를 argument로 받는다.
+	  - `req` object에서 웹페이지에 대한 정보를 얻고,
+	  - `res` object를 사용해 request를 완료한다
+	
+  * `req`: request가 가진 정보를 담은 object
+    - `req.url`(원본) 또는 `req.path`
+	- `req.method`: GET / POST여부
+	- `req.params`: Route의 Parameter
+	- `req.query`: GET 방식으로 받는 Query(?)
+	- `req.body`: POST 방식으로 받는 `<form>` 데이터
+	- `req.headers`
+  * `res`: request에 대해 서버가 응답하는 방식
+    - `res.end`: 빈화면 return함
+	- `res.send(~)`: 텍스트나 짧은 HTML문 반환
+	- `res.render(~)`: View Engine으로 웹페이지를 만듬
+	  - Pug와 같은 View Engine을 설정한 후 사용함.
+	- `res.locals`: 웹페이지를 render할 때 사용가능한 객체
+	- `res.redirect`: 다른 웹페이지로 이동
+	- `res.status(CODE).~`: HTML 응답코드를 설정한다
+	  - Browser에게 올바르지 못한 웹페이지임을 알린다.
+	  - 예시) 200(잘못됨) / 404(존재하지 않음)
+	- `res.sendStatus`: HTML 응답코드를 보낸다
+	  - API 설계에 사용된다
+	  
+  * `/`: Server의 Root 페이지
+  
+## Middleware 알아보기
+  - `Middleware`: Request와 Response 사이에 작동하는 Controller
+  - `Controller`: Express 서버를 이루는 Function
+  - `Middleware`는 `req`, `res`외에 `next`라는 argument를 가진다
+    - argument는 목적에 따라 생략이 가능하다
+	- 예시) req가 필요없다면 `(_, res)`
+  - `app.get`로 Middleware 만들기
+    - `app.get(ROUTE, CALLBACKs)`
+	- `CALLBACKs`: 여러 함수 중 마지막은 Controller, 가운데는 Middleware가 된다
+	  - 마지막 Controller는 response를 해야 한다
+	- `app.get`은 특정 URL에 한정해 작동하는 Middleware에 적합함.
+  - `app.use`로 Middleware 만들기
+    - `app.use(MIDDLEWARE명);`
+	- `app.use`는 공통적으로 작동하는 Middlware에 적합함.
+	- 코드 순서상 `app.get`보다 앞서야 함
+
+### Middleware 활용하기
+  - 웹페이지 접속 감시하기(Morgan)
+    - `npm i morgan`
+	- `morgan("dev")`
+  - `middleware.js` 분리하기
+  - `login` 여부에 따라 웹사이트 접속 통제하기
+  
