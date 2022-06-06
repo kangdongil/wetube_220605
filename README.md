@@ -7,7 +7,7 @@
     - ElectronJS: HTML/CSS/JS로 데스크톱 앱을 만들 수 있음. ex) VSCODE
     - ReactNative: JavaScript로 Android, iOS 어플을 만들 수 있음
 
-# NPM이란
+## NPM이란
   - JavaScript Package Manager
   - 커뮤니티의 유용한 NodeJS 코드를 끌어쓸 수 있음.
   - nodeJS와 함께 설치되므로 별도로 설치할 필요가 없음.
@@ -33,7 +33,7 @@
     - `.goorm.manifest`(GoormIDE)
 	- `node_modules/`
 
-# NodeJS 실행하기
+## NodeJS 실행하기
   1. `Node` 명령어 이용하기
      - `node [JS파일경로]`
   2. `package.json`의 `script` 이용하기
@@ -54,7 +54,7 @@
 	   - `touch nodemon.json`
 	   - `{"exec": "babel-node src/init.js"}`
 
-# NodeJS 프로젝트 구조 살펴보기
+## NodeJS 프로젝트 구조 살펴보기
   - `package.json`
     - NodeJS 프로젝트에 대한 설명을 내용으로 함.
     - `npm i`로 프로젝트에 필요한 패키지를 자동 설치한다.
@@ -74,7 +74,7 @@
       - 패키지 버전관리하는 파일
   - `src/`
 
-# NodeJS Package를 Import & Export하기
+## NodeJS Package를 Import & Export하기
   - NodeJS 파일은 환경독립적이다
     - 각 파일마다 import와 export를 개별적으로 해야한다
   - Import하기
@@ -159,4 +159,67 @@
 	- `morgan("dev")`
   - `middleware.js` 분리하기
   - `login` 여부에 따라 웹사이트 접속 통제하기
-  
+
+# Router 구상하기
+  - `Router`: URL과 Controller 관리를 도와줌.
+    - Router는 URL의 공통부분을 묶어 중복을 줄일 수 있다
+  - Project에 어떤 종류의 데이터가 주가 될지(Domain) 구상하기
+    - Wetube = Video + User
+  - 데이터를 다룰 때 어떤 기능이 필요한지 구상하기(CRUD)
+    - `User`: join / login / logout / edit-prfile / delete-profile
+	- `Video`: upload / search / watch / edit / delete
+  - 어떤 집단으로 묶을지 생각하고 각각을 Router로 정한다
+    - Global Router
+	  - `/`(루트 URL)을 기준으로 하는 URL의 집합
+	- User Router
+	- Video Router
+
+## Router 계획하기
+  - Global Router
+    - `/`: Home
+	- `/join`
+	- `/login`
+	- `/search`
+  - User Router
+    - `/users/:id`
+	- `/users/edit`
+	- `/users/logout`
+	- `/users/delete`
+  - Video Router
+	- `/videos/upload`
+    - `/videos/:id`
+	- `/videos/:id/edit`
+	- `/videos/:id/delete`
+	
+## Router 구축하기
+  - Router로 Route 관리하기
+    - router 만들기
+      - `const [Router명] = express.Router();`
+	- router를 이용해 route 만들기
+      - `[Router명].get([Route], [CONT])`
+	- app에 router 연결하기
+	  - `app.use([Route], [ROUTER]);`
+  - Router 파일별로 분리하기
+    - `mkdir src/routers`
+	- server에 router를 import하기
+	- `import [Router명] from "./routers/[Router명].js;`
+	- `touch src/routers/[router명].js`
+	  - `import express from "express";`
+	  - `export default [Router명];`
+  - Controller 파일별로 분리하기
+    - `mkdir src/controllers`
+    - `touch src/controllers/[controller명].js`
+    - Controller마다 맨 앞에 export 넣기
+	  - `export const [CONT명] = ...`
+	- router에 controller를 import하기
+	  - `import { [CONT명], ... } from "../controllers/[CONT명].js"`
+
+## URL Parameter 사용해 Route를 표현하기
+  - URL Parameter: URL에 변수를 사용하게 함
+  - URL에 변수를 사용하려면 `:[변수명]` 형식을 지키기
+  - `req.params`로 변수들이 담긴 object를 return함
+  - 변수가 포함된 route는 아랫줄에 두기(코드 진행순서 고려)
+  - 변수의 형태를 제한하려면 Regular Expression을 사용한다
+    - 예시) `:id(\\d+)`
+    - Express Reg: `?` / `+` / `*`
+	- JavaScript Reg: `\\d`
